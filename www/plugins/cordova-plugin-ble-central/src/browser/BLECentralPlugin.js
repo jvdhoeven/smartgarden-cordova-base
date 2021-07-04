@@ -37,7 +37,18 @@ var scanInterval = null;
 
 module.exports = {
     scan: function (services, seconds, success, failure) {
-        
+        var i = 1;
+        scanInterval = setInterval(() => {
+            if(i > 10) {
+                return;
+            }
+            success({'name':`Smartgarden Fake ${i}`,"id":"DC:A6:32:99:C4:53","advertising":{},"rssi":-59});
+            i++;
+        }, 400);
+
+        setTimeout(() => {
+            clearInterval(scanInterval);
+        }, seconds * 1000)
     },
 
     startScan: function (services, success, failure) {
@@ -168,7 +179,11 @@ module.exports = {
 
     // characteristic value comes back as ArrayBuffer in the success callback
     read: function (device_id, service_uuid, characteristic_uuid, success, failure) {
-
+        if(characteristic_uuid === '9a0c0611-a48f-4dbc-bde2-31582e606ee5') {
+            success(stringToArrayBuffer(`${Number(Math.random() * 100).toFixed(2)}`));
+        } else {
+            success(stringToArrayBuffer(`${Number(Math.random() * 15).toFixed(2)}`));
+        }
     },
 
     // RSSI value comes back as an integer
